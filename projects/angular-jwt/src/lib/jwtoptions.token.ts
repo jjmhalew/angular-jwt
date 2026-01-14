@@ -1,3 +1,3 @@
-import { InjectionToken } from '@angular/core';
+import { InjectionToken } from "@angular/core";
 
-export const JWT_OPTIONS = new InjectionToken('JWT_OPTIONS');
+export const JWT_OPTIONS = new InjectionToken("JWT_OPTIONS");

@@ -3,11 +3,11 @@ import { ApplicationConfig, provideBrowserGlobalErrorListeners } from "@angular/
 import { provideJwtConfig } from "angular-jwt";
 
 export function tokenGetter(): string {
-  return 'SOME_TOKEN';
+  return "SOME_TOKEN";
 }
 
 export function getAuthScheme(request: any): string {
-  return 'Bearer ';
+  return "Bearer ";
 }
 
 export function jwtOptionsFactory() {
