@@ -1,5 +1,8 @@
 # Change Log
 
+## [v21.0.0]
+Upgrade from Angular 14 to Angular 21.  
+
 ## [v5.2.0](https://github.com/auth0/angular2-jwt/tree/v5.2.0) (2023-10-31)
 [Full Changelog](https://github.com/auth0/angular2-jwt/compare/v5.1.2...v5.2.0)
 
