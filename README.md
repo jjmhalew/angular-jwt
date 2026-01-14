@@ -34,7 +34,7 @@ yarn add @jjmhalew/angular-jwt
 
 ## Configure the SDK
 
-Import `provideJtwConfig` and add it to your imports list. Provide a `tokenGetter` function. You must also add any domains to the `allowedDomains`, that you want to make requests to by specifying an `allowedDomains` array.
+Import `provideJwtConfig` and add it to your imports list. Provide a `tokenGetter` function. You must also add any domains to the `allowedDomains`, that you want to make requests to by specifying an `allowedDomains` array.
 
 Be sure to import the `HttpClientModule` as well.
 
@@ -50,7 +50,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     // ...
     provideHttpClient(withInterceptorsFromDi()),
-    provideJtwConfig({
+    provideJwtConfig({
       tokenGetter: tokenGetter,
       allowedDomains: ["example.com"],
       disallowedRoutes: ["http://example.com/examplebadroute/"],
