@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@angular/core';
+import { Injectable, Inject, inject } from '@angular/core';
 import {
   HttpRequest,
   HttpHandler,
@@ -10,7 +10,7 @@ import { JwtHelperService } from './jwthelper.service';
 import { JWT_OPTIONS } from './jwtoptions.token';
 
 import { map, mergeMap } from 'rxjs/operators';
-import { defer, from, Observable, of } from 'rxjs';
+import { defer, Observable, of } from 'rxjs';
 
 const fromPromiseOrValue = <T>(input: T | Promise<T>) => {
   if (input instanceof Promise) {
@@ -31,9 +31,10 @@ export class JwtInterceptor implements HttpInterceptor {
   skipWhenExpired: boolean;
   standardPorts: string[] = ['80', '443'];
 
+  public jwtHelper = inject(JwtHelperService);
+
   constructor(
     @Inject(JWT_OPTIONS) config: any,
-    public jwtHelper: JwtHelperService,
     @Inject(DOCUMENT) private document: Document
   ) {
     this.tokenGetter = config.tokenGetter;
@@ -48,7 +49,7 @@ export class JwtInterceptor implements HttpInterceptor {
     this.skipWhenExpired = config.skipWhenExpired;
   }
 
-  isAllowedDomain(request: HttpRequest<any>): boolean {
+  public isAllowedDomain(request: HttpRequest<any>): boolean {
     const requestUrl: URL = new URL(request.url, this.document.location.origin);
 
     // If the host equals the current window origin,
@@ -75,7 +76,7 @@ export class JwtInterceptor implements HttpInterceptor {
     );
   }
 
-  isDisallowedRoute(request: HttpRequest<any>): boolean {
+  public isDisallowedRoute(request: HttpRequest<any>): boolean {
     const requestedUrl: URL = new URL(
       request.url,
       this.document.location.origin
@@ -103,11 +104,11 @@ export class JwtInterceptor implements HttpInterceptor {
     );
   }
 
-  handleInterception(
+  public handleInterception(
     token: string | null,
     request: HttpRequest<any>,
     next: HttpHandler
-  ) {
+  ): Observable<HttpEvent<any>> {
     const authScheme = this.jwtHelper.getAuthScheme(this.authScheme, request);
 
     if (!token && this.throwNoTokenError) {
@@ -138,7 +139,7 @@ export class JwtInterceptor implements HttpInterceptor {
     return next.handle(request);
   }
 
-  intercept(
+  public intercept(
     request: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
