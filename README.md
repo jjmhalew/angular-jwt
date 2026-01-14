@@ -34,54 +34,9 @@ yarn add @jjmhalew/angular-jwt
 
 ## Configure the SDK
 
-Import the `JwtModule` module and add it to your imports list. Call the `forRoot` method and provide a `tokenGetter` function. You must also add any domains to the `allowedDomains`, that you want to make requests to by specifying an `allowedDomains` array.
+Import `provideJtwConfig` and add it to your imports list. Provide a `tokenGetter` function. You must also add any domains to the `allowedDomains`, that you want to make requests to by specifying an `allowedDomains` array.
 
 Be sure to import the `HttpClientModule` as well.
-
-```ts
-import { JwtModule } from "@jjmhalew/angular-jwt";
-import { HttpClientModule } from "@angular/common/http";
-
-export function tokenGetter() {
-  return localStorage.getItem("access_token");
-}
-
-@NgModule({
-  bootstrap: [AppComponent],
-  imports: [
-    // ...
-    HttpClientModule,
-    JwtModule.forRoot({
-      config: {
-        tokenGetter: tokenGetter,
-        allowedDomains: ["example.com"],
-        disallowedRoutes: ["http://example.com/examplebadroute/"],
-      },
-    }),
-  ],
-})
-export class AppModule {}
-```
-
-Any requests sent using Angular's `HttpClient` will automatically have a token attached as an `Authorization` header.
-
-```ts
-import { HttpClient } from "@angular/common/http";
-
-export class AppComponent {
-  constructor(public http: HttpClient) {}
-
-  ping() {
-    this.http.get("http://example.com/api/things").subscribe(
-      (data) => console.log(data),
-      (err) => console.log(err)
-    );
-  }
-}
-```
-
-## Using with Standalone Components
-If you are using `bootstrapApplication` to bootstrap your application using a standalone component, you will need a slightly different way to integrate our SDK:
 
 ```ts
 import { JwtModule } from "@jjmhalew/angular-jwt";
@@ -91,26 +46,36 @@ export function tokenGetter() {
   return localStorage.getItem("access_token");
 }
 
-bootstrapApplication(AppComponent, {
-    providers: [
-        // ...
-        importProvidersFrom(
-            JwtModule.forRoot({
-                config: {
-                    tokenGetter: tokenGetter,
-                    allowedDomains: ["example.com"],
-                    disallowedRoutes: ["http://example.com/examplebadroute/"],
-                },
-            }),
-        ),
-        provideHttpClient(
-            withInterceptorsFromDi()
-        ),
-    ],
-});
+export const appConfig: ApplicationConfig = {
+  providers: [
+    // ...
+    provideHttpClient(withInterceptorsFromDi()),
+    provideJtwConfig({
+      tokenGetter: tokenGetter,
+      allowedDomains: ["example.com"],
+      disallowedRoutes: ["http://example.com/examplebadroute/"],
+    }),
+  ],
+};
 ```
-As you can see, the differences are that:
-- The SDK's module is included trough `importProvidersFrom`.
+
+Any requests sent using Angular's `HttpClient` will automatically have a token attached as an `Authorization` header.
+
+```ts
+import { HttpClient } from "@angular/common/http";
+import { inject } from "@angular/core";
+
+export class AppComponent {
+  public http = inject(HttpClient);
+
+  ping() {
+    this.http.get("http://example.com/api/things").subscribe(
+      (data) => console.log(data),
+      (err) => console.log(err)
+    );
+  }
+}
+```
 - In order to use the SDK's interceptor, `provideHttpClient` needs to be called with `withInterceptorsFromDi`.
 
 
