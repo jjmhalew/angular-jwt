@@ -12,7 +12,6 @@
     "test:angular2-jwt": "ng test angular-jwt --no-watch --no-progress --browsers=ChromeHeadlessCI",
     "test:types": "tsd projects/angular-jwt/src",
     "lint": "ng lint",
-    "e2e": "ng e2e",
     "release": "npm publish dist/angular-jwt/"
   },
   "private": false,
