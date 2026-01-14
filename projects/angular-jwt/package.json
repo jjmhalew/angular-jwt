@@ -16,7 +16,8 @@
         "angular",
         "angular 2",
         "authentication",
-        "jwt"
+        "jwt",
+        "zoneless"
     ],
     "homepage": "https://github.com/jjmhalew/angular-jwt",
     "peerDependencies": {
