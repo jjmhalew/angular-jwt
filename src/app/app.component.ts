@@ -1,11 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ExampleHttpService } from './services/example-http.service';
+import { AsyncPipe, JsonPipe } from '@angular/common';
 
 @Component({
   selector: 'app-root',
   template: `<pre> {{ res$ | async | json }} </pre>`,
+  imports: [AsyncPipe, JsonPipe],
 })
 export class AppComponent {
-  res$ = this.exampleHttpService.testRequest();
-  constructor(private exampleHttpService: ExampleHttpService) {}
+  private exampleHttpService = inject(ExampleHttpService);
+  protected res$ = this.exampleHttpService.testRequest();
 }

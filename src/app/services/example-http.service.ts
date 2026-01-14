@@ -1,13 +1,13 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ExampleHttpService {
-  constructor(private http: HttpClient) {}
+  private http = inject(HttpClient);
 
-  testRequest(route = '/assets/example-resource.json') {
+  public testRequest(route = '/assets/example-resource.json') {
     return this.http.get(route);
   }
 }

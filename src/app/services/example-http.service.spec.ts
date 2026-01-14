@@ -10,7 +10,7 @@ export function tokenGetter() {
   return 'TEST_TOKEN';
 }
 
-export function tokenGetterWithRequest(request) {
+export function tokenGetterWithRequest(request: any) {
   if (request.url.includes('1')) {
     return 'TEST_TOKEN_1';
   }
