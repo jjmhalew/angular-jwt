@@ -11,32 +11,25 @@ The `tokenGetter` is a function which returns the user's token. This function si
 
 ```ts
 // ...
-JwtModule.forRoot({
-  config: {
-    // ...
-    tokenGetter: () => {
-      return localStorage.getItem("access_token");
-    },
-  },
-});
+provideJwtConfig({
+  // ...
+  tokenGetter: () => localStorage.getItem("access_token"),
+}),
 ```
 
 If you have multiple tokens for multiple domains, you can use the `HttpRequest` passed to the `tokenGetter` function to get the correct token for each intercepted request.
 
 ```ts
 // ...
-JwtModule.forRoot({
-  config: {
+provideJwtConfig({
     // ...
     tokenGetter: (request) => {
-      if (request.url.includes("foo")) {
+      if (request?.url?.includes("foo")) {
         return localStorage.getItem("access_token_foo");
       }
-
       return localStorage.getItem("access_token");
     },
-  },
-});
+  }),
 ```
 
 #### `allowedDomains: array`
@@ -47,12 +40,10 @@ List any domains you wish to allow authenticated requests to be sent to by speci
 
 ```ts
 // ...
-JwtModule.forRoot({
-  config: {
+ provideJwtConfig({
     // ...
     allowedDomains: ["localhost:3001", "foo.com", "bar.com"],
-  },
-});
+  }),
 ```
 
 #### `disallowedRoutes: array`
@@ -62,8 +53,7 @@ initial auth route(s) are on an allowed domain and take basic auth headers. Thes
 
 ```ts
 // ...
-JwtModule.forRoot({
-  config: {
+provideJwtConfig({
     // ...
     disallowedRoutes: [
       "http://localhost:3001/auth/",
@@ -71,8 +61,7 @@ JwtModule.forRoot({
       "//foo.com/bar/baz",
       /localhost:3001\/foo\/far.*/,
     ], // strings and regular expressions
-  },
-});
+  }),
 ```
 
 **Note:** If requests are sent to the same domain that is serving your Angular application, you do not need to add that domain to the `allowedDomains` array. However, this is only the case if you don't specify the domain in the `Http` request.
@@ -100,12 +89,10 @@ The default header name is `Authorization`. This can be changed by specifying a 
 
 ```ts
 // ...
-JwtModule.forRoot({
-  config: {
-    // ...
-    headerName: "Your Header Name",
-  },
-});
+provideJwtConfig({
+  // ...
+  headerName: "Your Header Name",
+}),
 ```
 
 #### `authScheme: string | function(HttpRequest): string`
@@ -114,30 +101,25 @@ The default authorization scheme is `Bearer` followed by a single space. This ca
 
 ```ts
 // ...
-JwtModule.forRoot({
-  config: {
-    // ...
-    authScheme: "Basic ",
-  },
-});
+provideJwtConfig({
+  // ...
+  authScheme: "Basic ",
+}),
 ```
 
 If you want to change the auth scheme dynamically, or based on the request, you can configure a getter function which returns a string.
 
 ```ts
 // ...
-JwtModule.forRoot({
-  config: {
-    // ...
-    authScheme: (request) => {
-      if (request.url.includes("foo")) {
-        return "Basic ";
-      }
-
-      return "Bearer ";
-    },
+provideJwtConfig({
+  // ...
+  authScheme: (request) => {
+    if (request?.url?.includes("foo")) {
+      return "Basic ";
+    }
+    return "Bearer ";
   },
-});
+}),
 ```
 
 #### `throwNoTokenError: boolean`
@@ -146,12 +128,10 @@ Setting `throwNoTokenError` to `true` will result in an error being thrown if a 
 
 ```ts
 // ...
-JwtModule.forRoot({
-  config: {
-    // ...
-    throwNoTokenError: true,
-  },
-});
+ provideJwtConfig({
+  // ...
+  throwNoTokenError: true,
+}),
 ```
 
 #### `skipWhenExpired: boolean`
@@ -160,12 +140,10 @@ By default, the user's JWT will be sent in `HttpClient` requests even if it is e
 
 ```ts
 // ...
-JwtModule.forRoot({
-  config: {
-    // ...
-    skipWhenExpired: true,
-  },
-});
+provideJwtConfig({
+  // ...
+  skipWhenExpired: true,
+}),
 ```
 
 ### `JwtHelperService`
@@ -177,7 +155,7 @@ This service contains helper functions:
 ```ts
 import { JwtHelperService } from '@auth0/angular-jwt';
 // ...
-constructor(public jwtHelper: JwtHelperService) {}
+public jwtHelper = inject(JwtHelperService);
 
 ngOnInit() {
   console.log(this.jwtHelper.isTokenExpired()); // true or false
@@ -189,7 +167,7 @@ ngOnInit() {
 ```ts
 import { JwtHelperService } from '@auth0/angular-jwt';
 // ...
-constructor(public jwtHelper: JwtHelperService) {}
+public jwtHelper = inject(JwtHelperService);
 
 ngOnInit() {
   console.log(this.jwtHelper.getTokenExpirationDate()); // date
@@ -201,7 +179,7 @@ ngOnInit() {
 ```ts
 import { JwtHelperService } from '@auth0/angular-jwt';
 // ...
-constructor(public jwtHelper: JwtHelperService) {}
+public jwtHelper = inject(JwtHelperService);
 
 ngOnInit() {
   console.log(this.jwtHelper.decodeToken(token)); // token

@@ -1,32 +1,25 @@
-import { fakeAsync, flush, TestBed } from '@angular/core/testing';
-import { ExampleHttpService } from './example-http.service';
-import {
-  HttpClientTestingModule,
-  HttpTestingController,
-} from '@angular/common/http/testing';
-import { JwtModule } from 'angular-jwt';
+import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
+import { TestBed } from "@angular/core/testing";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
+
+import { provideJwtConfig } from "angular-jwt";
+import { ExampleHttpService } from "./example-http.service";
 
 export function tokenGetter() {
-  return 'TEST_TOKEN';
+  return "TEST_TOKEN";
 }
 
-export function tokenGetterWithRequest(request) {
-  if (request.url.includes('1')) {
-    return 'TEST_TOKEN_1';
-  }
-
-  if (request.url.includes('2')) {
-    return 'TEST_TOKEN_2';
-  }
-
-  return 'TEST_TOKEN';
+export function tokenGetterWithRequest(request: any) {
+  if (request.url.includes("1")) return "TEST_TOKEN_1";
+  if (request.url.includes("2")) return "TEST_TOKEN_2";
+  return "TEST_TOKEN";
 }
 
 export function tokenGetterWithPromise() {
-  return Promise.resolve('TEST_TOKEN');
+  return Promise.resolve("TEST_TOKEN");
 }
 
-describe('Example HttpService: with promise based tokken getter', () => {
+describe("Example HttpService: with promise based tokken getter", () => {
   let service: ExampleHttpService;
   let httpMock: HttpTestingController;
 
@@ -40,6 +33,7 @@ describe('Example HttpService: with promise based tokken getter', () => {
     `http://localhost:3000`,
     `http://localhost:3000/api`,
   ];
+
   const invalidRoutes = [
     `http://allowed.com/api/disallowed`,
     `http://allowed.com/api/disallowed-protocol`,
@@ -47,65 +41,66 @@ describe('Example HttpService: with promise based tokken getter', () => {
     `http://allowed.com/api/disallowed-regex`,
     `http://allowed-regex.com/api/disallowed-regex`,
     `http://foo.com/bar`,
-    'http://localhost/api',
-    'http://localhost:4000/api',
+    "http://localhost/api",
+    "http://localhost:4000/api",
   ];
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        JwtModule.forRoot({
-          config: {
-            tokenGetter: tokenGetterWithPromise,
-            allowedDomains: ['allowed.com', /allowed-regex*/, 'localhost:3000'],
-            disallowedRoutes: [
-              'http://allowed.com/api/disallowed-protocol',
-              '//allowed.com/api/disallowed',
-              /disallowed-regex*/,
-            ],
-          },
+      providers: [
+        provideHttpClientTesting(),
+        provideJwtConfig({
+          tokenGetter: tokenGetterWithPromise,
+          allowedDomains: ["allowed.com", /allowed-regex*/, "localhost:3000"],
+          disallowedRoutes: ["http://allowed.com/api/disallowed-protocol", "//allowed.com/api/disallowed", /disallowed-regex*/],
         }),
+        ExampleHttpService,
       ],
     });
-    service = TestBed.get(ExampleHttpService);
-    httpMock = TestBed.get(HttpTestingController);
+
+    service = TestBed.inject(ExampleHttpService);
+    httpMock = TestBed.inject(HttpTestingController);
   });
 
-  it('should add Authorisation header', () => {
+  afterEach(() => {
+    httpMock.verify();
+  });
+
+  it("should add Authorisation header (service should be created)", () => {
     expect(service).toBeTruthy();
   });
 
-  validRoutes.forEach((route) =>
-    it(`should set the correct auth token for a allowed domain: ${route}`, fakeAsync(() => {
-      service.testRequest(route).subscribe((response) => {
+  validRoutes.forEach(route =>
+    it(`should set the correct auth token for an allowed domain: ${route}`, async () => {
+      service.testRequest(route).subscribe(response => {
         expect(response).toBeTruthy();
       });
 
-      flush();
-      const httpRequest = httpMock.expectOne(route);
+      const req = httpMock.expectOne(route);
 
-      expect(httpRequest.request.headers.has('Authorization')).toEqual(true);
-      expect(httpRequest.request.headers.get('Authorization')).toEqual(
-        `Bearer TEST_TOKEN`
-      );
-    }))
+      expect(req.request.headers.has("Authorization")).toBe(true);
+      expect(req.request.headers.get("Authorization")).toBe(`Bearer TEST_TOKEN`);
+
+      req.flush({ ok: true });
+    })
   );
 
-  invalidRoutes.forEach((route) =>
-    it(`should not set the auth token for a disallowed route: ${route}`, fakeAsync(() => {
-      service.testRequest(route).subscribe((response) => {
+  invalidRoutes.forEach(route =>
+    it(`should not set the auth token for a disallowed route: ${route}`, async () => {
+      service.testRequest(route).subscribe(response => {
         expect(response).toBeTruthy();
       });
 
-      flush();
-      const httpRequest = httpMock.expectOne(route);
-      expect(httpRequest.request.headers.has('Authorization')).toEqual(false);
+      const req = httpMock.expectOne(route);
+
+      expect(req.request.headers.has("Authorization")).toBe(false);
+
+      req.flush({ ok: true });
     })
-  ));
+  );
 });
 
-describe('Example HttpService: with simple tokken getter', () => {
+describe("Example HttpService: with simple tokken getter", () => {
   let service: ExampleHttpService;
   let httpMock: HttpTestingController;
 
@@ -119,6 +114,7 @@ describe('Example HttpService: with simple tokken getter', () => {
     `http://localhost:3000`,
     `http://localhost:3000/api`,
   ];
+
   const invalidRoutes = [
     `http://allowed.com/api/disallowed`,
     `http://allowed.com/api/disallowed-protocol`,
@@ -126,149 +122,156 @@ describe('Example HttpService: with simple tokken getter', () => {
     `http://allowed.com/api/disallowed-regex`,
     `http://allowed-regex.com/api/disallowed-regex`,
     `http://foo.com/bar`,
-    'http://localhost/api',
-    'http://localhost:4000/api',
+    "http://localhost/api",
+    "http://localhost:4000/api",
   ];
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        JwtModule.forRoot({
-          config: {
-            tokenGetter: tokenGetter,
-            allowedDomains: ['allowed.com', /allowed-regex*/, 'localhost:3000'],
-            disallowedRoutes: [
-              'http://allowed.com/api/disallowed-protocol',
-              '//allowed.com/api/disallowed',
-              /disallowed-regex*/,
-            ],
-          },
+      providers: [
+        provideHttpClientTesting(),
+        provideJwtConfig({
+          tokenGetter,
+          allowedDomains: ["allowed.com", /allowed-regex*/, "localhost:3000"],
+          disallowedRoutes: ["http://allowed.com/api/disallowed-protocol", "//allowed.com/api/disallowed", /disallowed-regex*/],
         }),
+        ExampleHttpService,
       ],
     });
-    service = TestBed.get(ExampleHttpService);
-    httpMock = TestBed.get(HttpTestingController);
+
+    service = TestBed.inject(ExampleHttpService);
+    httpMock = TestBed.inject(HttpTestingController);
   });
 
-  it('should add Authorisation header', () => {
+  afterEach(() => {
+    httpMock.verify();
+  });
+
+  it("should add Authorisation header (service should be created)", () => {
     expect(service).toBeTruthy();
   });
 
-  validRoutes.forEach((route) =>
-    it(`should set the correct auth token for a allowed domain: ${route}`, () => {
-      service.testRequest(route).subscribe((response) => {
+  validRoutes.forEach(route =>
+    it(`should set the correct auth token for an allowed domain: ${route}`, () => {
+      service.testRequest(route).subscribe(response => {
         expect(response).toBeTruthy();
       });
 
-      const httpRequest = httpMock.expectOne(route);
+      const req = httpMock.expectOne(route);
 
-      expect(httpRequest.request.headers.has('Authorization')).toEqual(true);
-      expect(httpRequest.request.headers.get('Authorization')).toEqual(
-        `Bearer ${tokenGetter()}`
-      );
+      expect(req.request.headers.has("Authorization")).toBe(true);
+      expect(req.request.headers.get("Authorization")).toBe(`Bearer ${tokenGetter()}`);
+
+      req.flush({ ok: true });
     })
   );
 
-  invalidRoutes.forEach((route) =>
+  invalidRoutes.forEach(route =>
     it(`should not set the auth token for a disallowed route: ${route}`, () => {
-      service.testRequest(route).subscribe((response) => {
+      service.testRequest(route).subscribe(response => {
         expect(response).toBeTruthy();
       });
 
-      const httpRequest = httpMock.expectOne(route);
-      expect(httpRequest.request.headers.has('Authorization')).toEqual(false);
+      const req = httpMock.expectOne(route);
+
+      expect(req.request.headers.has("Authorization")).toBe(false);
+
+      req.flush({ ok: true });
     })
   );
 });
 
-describe('Example HttpService: with request based tokken getter', () => {
+describe("Example HttpService: with request based tokken getter", () => {
   let service: ExampleHttpService;
   let httpMock: HttpTestingController;
 
-  const routes = [
-    `http://example-1.com/api/`,
-    `http://example-2.com/api/`,
-    `http://example-3.com/api/`,
-  ];
+  const routes = [`http://example-1.com/api/`, `http://example-2.com/api/`, `http://example-3.com/api/`];
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        JwtModule.forRoot({
-          config: {
-            tokenGetter: tokenGetterWithRequest,
-            allowedDomains: ['example-1.com', 'example-2.com', 'example-3.com'],
-          },
+      providers: [
+        provideHttpClientTesting(),
+        provideJwtConfig({
+          tokenGetter: tokenGetterWithRequest,
+          allowedDomains: ["example-1.com", "example-2.com", "example-3.com"],
         }),
+        ExampleHttpService,
       ],
     });
-    service = TestBed.get(ExampleHttpService);
-    httpMock = TestBed.get(HttpTestingController);
+
+    service = TestBed.inject(ExampleHttpService);
+    httpMock = TestBed.inject(HttpTestingController);
   });
 
-  it('should add Authorisation header', () => {
+  afterEach(() => {
+    httpMock.verify();
+  });
+
+  it("should add Authorisation header (service should be created)", () => {
     expect(service).toBeTruthy();
   });
 
-  routes.forEach((route) =>
+  routes.forEach(route =>
     it(`should set the correct auth token for a domain: ${route}`, () => {
-      service.testRequest(route).subscribe((response) => {
+      service.testRequest(route).subscribe(response => {
         expect(response).toBeTruthy();
       });
 
-      const httpRequest = httpMock.expectOne(route);
-      expect(httpRequest.request.headers.has('Authorization')).toEqual(true);
-      expect(httpRequest.request.headers.get('Authorization')).toEqual(
-        `Bearer ${tokenGetterWithRequest({ url: route })}`
-      );
+      const req = httpMock.expectOne(route);
+
+      expect(req.request.headers.has("Authorization")).toBe(true);
+      expect(req.request.headers.get("Authorization")).toBe(`Bearer ${tokenGetterWithRequest({ url: route })}`);
+
+      req.flush({ ok: true });
     })
   );
 });
 
-const authSchemes = [
-  [undefined, 'Bearer '],
-  ['Basic ', 'Basic '],
-  [() => 'Basic ', 'Basic '],
+const authSchemes: Array<[undefined | string | (() => string), string]> = [
+  [undefined, "Bearer "],
+  ["Basic ", "Basic "],
+  [() => "Basic ", "Basic "],
 ];
 
-authSchemes.forEach((scheme) => {
-  let service: ExampleHttpService;
-  let httpMock: HttpTestingController;
-
+authSchemes.forEach(([schemeInput, expectedPrefix]) => {
   describe(`Example HttpService: with ${
-    typeof scheme[0] === 'function'
-      ? 'an authscheme getter function'
-      : 'a simple authscheme getter'
+    typeof schemeInput === "function" ? "an authscheme getter function" : "a simple authscheme getter"
   }`, () => {
+    let service: ExampleHttpService;
+    let httpMock: HttpTestingController;
+
     beforeEach(() => {
       TestBed.configureTestingModule({
-        imports: [
-          HttpClientTestingModule,
-          JwtModule.forRoot({
-            config: {
-              tokenGetter: tokenGetter,
-              authScheme: scheme[0],
-              allowedDomains: ['allowed.com'],
-            },
+        providers: [
+          provideHttpClientTesting(),
+          provideJwtConfig({
+            tokenGetter,
+            authScheme: schemeInput as any,
+            allowedDomains: ["allowed.com"],
           }),
+          ExampleHttpService,
         ],
       });
-      service = TestBed.get(ExampleHttpService);
-      httpMock = TestBed.get(HttpTestingController);
+
+      service = TestBed.inject(ExampleHttpService);
+      httpMock = TestBed.inject(HttpTestingController);
     });
 
-    it(`should set the correct auth scheme a request (${scheme[1]})`, () => {
-      service.testRequest('http://allowed.com').subscribe((response) => {
+    afterEach(() => {
+      httpMock.verify();
+    });
+
+    it(`should set the correct auth scheme on a request (${expectedPrefix})`, () => {
+      service.testRequest("http://allowed.com").subscribe(response => {
         expect(response).toBeTruthy();
       });
 
-      const httpRequest = httpMock.expectOne('http://allowed.com');
-      expect(httpRequest.request.headers.has('Authorization')).toEqual(true);
-      expect(httpRequest.request.headers.get('Authorization')).toEqual(
-        `${scheme[1]}${tokenGetter()}`
-      );
+      const req = httpMock.expectOne("http://allowed.com");
+
+      expect(req.request.headers.has("Authorization")).toBe(true);
+      expect(req.request.headers.get("Authorization")).toBe(`${expectedPrefix}${tokenGetter()}`);
+
+      req.flush({ ok: true });
     });
   });
 });
