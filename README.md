@@ -11,7 +11,7 @@
 
 ## Documentation
 
-- [Examples](https://github.com/auth0/angular2-jwt/blob/main/EXAMPLES.md) - code samples for common angular-jwt authentication scenario's.
+- [Examples](https://github.com/jjmhalew/angular-jwt/blob/main/EXAMPLES.md) - code samples for common angular-jwt authentication scenario's.
 - [Docs site](https://www.auth0.com/docs) - explore our docs site and learn more about Auth0.
 
 This library provides an `HttpInterceptor` which automatically attaches a [JSON Web Token](https://jwt.io) to `HttpClient` requests.
@@ -26,10 +26,10 @@ This project only supports the [actively supported versions of Angular as stated
 
 ```bash
 # installation with npm
-npm install @auth0/angular-jwt
+npm install @jjmhalew/angular-jwt
 
 # installation with yarn
-yarn add @auth0/angular-jwt
+yarn add @jjmhalew/angular-jwt
 ```
 
 ## Configure the SDK
@@ -39,7 +39,7 @@ Import the `JwtModule` module and add it to your imports list. Call the `forRoot
 Be sure to import the `HttpClientModule` as well.
 
 ```ts
-import { JwtModule } from "@auth0/angular-jwt";
+import { JwtModule } from "@jjmhalew/angular-jwt";
 import { HttpClientModule } from "@angular/common/http";
 
 export function tokenGetter() {
@@ -84,7 +84,7 @@ export class AppComponent {
 If you are using `bootstrapApplication` to bootstrap your application using a standalone component, you will need a slightly different way to integrate our SDK:
 
 ```ts
-import { JwtModule } from "@auth0/angular-jwt";
+import { JwtModule } from "@jjmhalew/angular-jwt";
 import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 
 export function tokenGetter() {
@@ -115,7 +115,7 @@ As you can see, the differences are that:
 
 
 ## API reference
-Read [our API reference](https://github.com/auth0/angular2-jwt/blob/main/API.md) to get a better understanding on how to use this SDK.
+Read [our API reference](https://github.com/jjmhalew/angular-jwt/blob/main/API.md) to get a better understanding on how to use this SDK.
 
 ## Feedback
 
@@ -125,10 +125,10 @@ We appreciate feedback and contribution to this repo! Before you get started, pl
 
 - [Auth0's general contribution guidelines](https://github.com/auth0/open-source-template/blob/master/GENERAL-CONTRIBUTING.md)
 - [Auth0's code of conduct guidelines](https://github.com/auth0/open-source-template/blob/master/CODE-OF-CONDUCT.md)
-- [This repo's contribution guide](https://github.com/auth0/angular2-jwt/blob/main/CONTRIBUTING.md)
+- [This repo's contribution guide](https://github.com/jjmhalew/angular-jwt/blob/main/CONTRIBUTING.md)
 ### Raise an issue
 
-To provide feedback or report a bug, please [raise an issue on our issue tracker](https://github.com/auth0/angular2-jwt/issues).
+To provide feedback or report a bug, please [raise an issue on our issue tracker](https://github.com/jjmhalew/angular-jwt/issues).
 
 ### Vulnerability Reporting
 
