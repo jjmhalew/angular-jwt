@@ -20,7 +20,7 @@ This library does not have any functionality for (or opinion about) implementing
 
 ## Getting started
 ### Requirements
-This project only supports the [actively supported versions of Angular as stated in the Angular documentation](https://angular.io/guide/releases#actively-supported-versions). Whilst other versions might be compatible they are not actively supported
+This project only supports the [actively supported versions of Angular as stated in the Angular documentation](https://angular.dev/reference/releases#actively-supported-versions). Whilst other versions might be compatible they are not actively supported
 
 ### Installation
 
