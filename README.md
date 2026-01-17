@@ -36,7 +36,7 @@ yarn add @jjmhalew/angular-jwt
 
 Import `provideJwtConfig` and add it to your imports list. Provide a `tokenGetter` function. You must also add any domains to the `allowedDomains`, that you want to make requests to by specifying an `allowedDomains` array.
 
-Be sure to import the `HttpClientModule` as well.
+Be sure to import the `provideHttpClient` as well.
 
 ```ts
 import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
