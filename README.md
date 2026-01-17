@@ -39,7 +39,6 @@ Import `provideJwtConfig` and add it to your imports list. Provide a `tokenGette
 Be sure to import the `HttpClientModule` as well.
 
 ```ts
-import { JwtModule } from "@jjmhalew/angular-jwt";
 import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 
 export function tokenGetter() {
