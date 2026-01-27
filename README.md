@@ -20,7 +20,7 @@ This library does not have any functionality for (or opinion about) implementing
 
 ## Getting started
 ### Requirements
-This project only supports the [actively supported versions of Angular as stated in the Angular documentation](https://angular.io/guide/releases#actively-supported-versions). Whilst other versions might be compatible they are not actively supported
+This project only supports the [actively supported versions of Angular as stated in the Angular documentation](https://angular.dev/reference/releases#actively-supported-versions). Whilst other versions might be compatible they are not actively supported
 
 ### Installation
 
@@ -36,10 +36,9 @@ yarn add @jjmhalew/angular-jwt
 
 Import `provideJwtConfig` and add it to your imports list. Provide a `tokenGetter` function. You must also add any domains to the `allowedDomains`, that you want to make requests to by specifying an `allowedDomains` array.
 
-Be sure to import the `HttpClientModule` as well.
+Be sure to import the `provideHttpClient` as well.
 
 ```ts
-import { JwtModule } from "@jjmhalew/angular-jwt";
 import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 
 export function tokenGetter() {
