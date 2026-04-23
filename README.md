@@ -1,11 +1,9 @@
 ![Helper library for handling JWTs in Angular applications](https://cdn.auth0.com/website/sdks/banners/angular-jwt-banner.png)
 
 ![Release](https://img.shields.io/github/v/release/jjmhalew/angular-jwt)
-[![codecov](https://codecov.io/gh/jjmhalew/angular-jwt/branch/main/graph/badge.svg?token=wnauXldcdE)](https://codecov.io/gh/jjmhalew/angular-jwt)
-[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/auth0/angular2-jwt)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/jjmhalew/angular2-jwt)
 ![Downloads](https://img.shields.io/npm/dw/@jjmhalew/angular-jwt)
 [![License](https://img.shields.io/:license-MIT-blue.svg?style=flat)](https://opensource.org/licenses/MIT)
-[![CircleCI](https://img.shields.io/circleci/build/github/jjmhalew/angular-jwt)](https://circleci.com/gh/jjmhalew/angular-jwt)
 
 :books: [Documentation](#documentation) - :rocket: [Getting Started](#getting-started) - :computer: [API Reference](#api-reference) - :speech_balloon: [Feedback](#feedback)
 
